@@ -2,10 +2,10 @@
 /**
  * LifterLMS Stripe Gateway Settings
  *
- * @package LifterLMS_Stripe/Admin/Settings
+ * @package LifterLMS_Sample_Gateway/Admin/Settings
  *
- * @since 5.0.0
- * @version 5.0.0
+ * @since [version]
+ * @version [version]
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -25,25 +25,25 @@ $fields = array();
 $fields[] = array(
 	/**
 	 * Each setting maps to an option in the `wp_options` database table.
-	 * 
+	 *
 	 * Using the `get_option_name()` method from the abstract makes it so you don't need
 	 * to use the gateway's prefix for each option.
 	 *
 	 * This will end up creating a setting `llms_gateway_sample_live_api_key`.
 	 */
-	'id' => $gateway->get_option_name( 'live_api_key' ),
+	'id'            => $gateway->get_option_name( 'live_api_key' ),
 
 	/**
 	 * The title of the setting shown to users on the admin panel.
 	 */
-	'title' => __( 'Live Mode API Key', 'lifterlms-sample-gateway' ),
+	'title'         => __( 'Live Mode API Key', 'lifterlms-sample-gateway' ),
 
 	/**
 	 * An optional option description.
 	 *
 	 * Allows HTML which might be useful for adding links to documentation related to the option.
 	 */
-	'desc' => '<br>' . sprintf( __( 'Need help finding your API key? %1$sLearn how.%2$s', 'lifterlms' ), '<a href="#documentation-link">', '</a>' ),
+	'desc'          => '<br>' . sprintf( __( 'Need help finding your API key? %1$sLearn how.%2$s', 'lifterlms' ), '<a href="#documentation-link">', '</a>' ),
 
 	/**
 	 * The type of setting field.
@@ -52,7 +52,7 @@ $fields[] = array(
 	 *
 	 * Also accepts "textarea", "select", "checkbox", etc...
 	 */
-	'type' => 'text',
+	'type'          => 'text',
 
 	/**
 	 * The `secure_option` is designed to enable the definition of credentials in
@@ -83,7 +83,7 @@ $fields[] = array(
 	'title'         => __( 'Sandbox API Key', 'lifterlms' ),
 	'desc'          => '<br>' . __( 'Use API Key "SECRET" for automatic success with the mock API. Leave blank or enter anything else to see error handlers.', 'lifterlms' ),
 	'type'          => 'text',
-	'secure_option' => 'LLMS_SAMPLE_GATEWAY_TEST_API_KEY'
+	'secure_option' => 'LLMS_SAMPLE_GATEWAY_TEST_API_KEY',
 );
 
 /**
@@ -99,18 +99,18 @@ $fields[] = array(
 );
 
 /**
- * 
+ *
  */
 $fields[] = array(
-	'id'    => $gateway->get_option_name( 'select_option' ),
-	'title' => __( 'Multiple Option Setting', 'lifterlms' ),
-	'desc'  => '<br>' . __( 'Add a gateway option with a dropdown.', 'lifterlms' ),
-	'type'  => 'select',
+	'id'      => $gateway->get_option_name( 'select_option' ),
+	'title'   => __( 'Multiple Option Setting', 'lifterlms' ),
+	'desc'    => '<br>' . __( 'Add a gateway option with a dropdown.', 'lifterlms' ),
+	'type'    => 'select',
 	'options' => array(
 		'one'   => esc_html__( 'Option One', 'lifterlms' ),
 		'two'   => esc_html__( 'Option Two', 'lifterlms' ),
 		'three' => esc_html__( 'Option Three', 'lifterlms' ),
 	),
-);	
+);
 
 return $fields;

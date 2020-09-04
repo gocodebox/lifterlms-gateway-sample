@@ -2,6 +2,8 @@
 /**
  * LifterLMS Sample Payment Gateway Plugin
  *
+ * This main file is loaded by WordPress, defines a few constants, and includes the main plugin class.
+ *
  * @package LifterLMS_Sample_Gateway/Main
  *
  * @since [version]
@@ -9,7 +11,7 @@
  *
  * Plugin Name: LifterLMS Sample Payment Gateway
  * Plugin URI: https://github.com/gocodebox/lifterlms-gateway-sample
- * Description: This plugin is a sample payment gateway which exists to demonstrate how to build a payment gateway plugin for LifterLMS 
+ * Description: This plugin is a sample payment gateway which exists to demonstrate how to build a payment gateway plugin for LifterLMS
  * Version: 1.0.0
  * Author: LifterLMS
  * Author URI: https://lifterlms.com

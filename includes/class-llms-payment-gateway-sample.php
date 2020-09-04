@@ -4,7 +4,7 @@
  *
  * This class is the main payment gateway class that extends the core LLMS_Payment_Gateway abstract
  *
- * @package LifterLMS/Abstracts/Classes
+ * @package LifterLMS_Sample_Gateway/Classes
  *
  * @since [version]
  * @version [version]
@@ -51,7 +51,6 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		// add_action( 'lifterlms_checkout_confirm_after_payment_method', array( $this, 'confirm_order_html' ) );
 
 		// add_filter( 'llms_gateway_stripe_show_confirm_order_button', '__return_false' );
-
 	}
 
 	/**
@@ -59,7 +58,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 *
 	 * @since [version]
 	 *
-	 * @param array $default_fields Array of existing fields.
+	 * @param array  $default_fields Array of existing fields.
 	 * @param string $gateway_id Id of the gateway.
 	 * @return array
 	 */
@@ -67,7 +66,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 
 		// Only add fields to this payment gateway
 		if ( $this->id === $gateway_id ) {
-		
+
 			/**
 			 * Include the gateway field settings list.
 			 *
@@ -79,9 +78,8 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 			$default_fields = array_merge( $default_fields, $fields );
 
 		}
-	
-		return $default_fields;
 
+		return $default_fields;
 
 	}
 
@@ -123,13 +121,13 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 * The gateway's description displayed to users on the frontend of the website.
 		 *
 		 * In our Stripe gateway the description is is "Processed by Stripe".
-		 * 
+		 *
 		 * This field can be edited by site admins on the gateway's settings screen.
 		 *
 		 * @var string
 		 */
 		$this->description = __( 'Secure Sample Purchases', 'lifterlms-stripe' );
-		
+
 		/**
 		 * The title of the gateway as displayed on the admin panel
 		 *
@@ -141,7 +139,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 * @var string
 		 */
 		$this->admin_title = _x( 'Sample Payment Gateway', 'Gateway admin title', 'lifterlms' );
-		
+
 		/**
 		 * The payment gateway's description as displayed on the admin panel on settings screens.
 		 *
@@ -168,12 +166,12 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 *
 		 * Sometimes a gateway doesn't call it's testing environment "testing". This variable allows you
 		 * to customize the language used to refer to test mode.
-		 * 
+		 *
 		 * For example, PayPal calls it's test environment "Sandbox" while Stripe calls it "Testing".
 		 *
 		 * @var string
 		 */
-		$this->test_mode_title       = __( 'Sandbox Mode', 'lifterlms-stripe' );
+		$this->test_mode_title = __( 'Sandbox Mode', 'lifterlms-stripe' );
 
 		/**
 		 * A description of the gateway's testing environment.
@@ -183,7 +181,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 *
 		 * @var [type]
 		 */
-		$this->test_mode_description = sprintf( 
+		$this->test_mode_description = sprintf(
 			__( 'Sandbox Mode can be used to process test transactions. %1$sLearn More.%2$s', 'lifterlms', ),
 			'<a href="#">', // Add a link to the gateway's documentation here.
 			'</a>'
@@ -194,7 +192,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 *
 		 * Each feature is disabled by default so any unsupported features can be deleted or switched to `false`
 		 * to explicitly denote a lack of support.
-		 * 
+		 *
 		 * @var array
 		 */
 		$this->supports = array(
@@ -205,19 +203,19 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 			 * Some gateways will have a custom form shown on the checkout page while others
 			 * have hosted checkout fields that the user will be redirected to off site.
 			 */
-			'checkout_fields' => true,
+			'checkout_fields'    => true,
 
 			/**
 			 * Denotes that users can process refunds from the order screen on the admin panel
 			 * of the LifterLMS site.
 			 */
-			'refunds' => true,
+			'refunds'            => true,
 
 			/**
 			 * Denotes that one-time payment access plans can be processed by this gateway.
 			 */
-			'single_payments' => true,
-			
+			'single_payments'    => true,
+
 			/**
 			 * Denotes that recurring payment access plans can be processed by this gateway.
 			 */
@@ -226,23 +224,22 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 			/**
 			 * Denotes that failed recurring payments are automatically retried by the gateway.
 			 */
-			'recurring_retry' => true,
+			'recurring_retry'    => true,
 
 			/**
 			 * Denotes that the gateway has a test environment or mode which can be used
 			 * to run test or sandbox transactions.
 			 */
-			'test_mode' => true,
+			'test_mode'          => true,
 		);
 
 		// $this->admin_order_fields = wp_parse_args(
-		// 	array(
-		// 		'customer' => true,
-		// 		'source'   => true,
-		// 	),
-		// 	$this->admin_order_fields
+		// array(
+		// 'customer' => true,
+		// 'source'   => true,
+		// ),
+		// $this->admin_order_fields
 		// );
-
 	}
 
 	/**
@@ -289,7 +286,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 * to allow customization of the gateway fields.
 		 *
 		 * @since [version]
-		 * 
+		 *
 		 * @param string $html The checkout field HTML.
 		 */
 		return apply_filters( 'llms_get_gateway_fields', ob_get_clean(), $this->id );
@@ -304,13 +301,12 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		// Retrieve all checkout fields.
 		foreach ( array( 'number', 'expiration', 'cvc' ) as $field ) {
 
-			$data[ $field ] =  llms_filter_input( INPUT_POST, 'llms_sg_' . $field, FILTER_SANITIZE_STRING );
+			$data[ $field ] = llms_filter_input( INPUT_POST, 'llms_sg_' . $field, FILTER_SANITIZE_STRING );
 
 			// In our example, all fields are required.
 			if ( empty( $data[ $field ] ) ) {
-				$errs->add( 'llms_sg_checkout_requied_field_' . $field, sprintf( __( 'Missing required field: %s', 'lifterlms' ), $field  ) );
+				$errs->add( 'llms_sg_checkout_requied_field_' . $field, sprintf( __( 'Missing required field: %s', 'lifterlms' ), $field ) );
 			}
-
 		}
 
 		/**
@@ -324,7 +320,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 *
 		 * For a good validation example go search Stack Overflow like a real developer would!
 		 */
-		
+
 		if ( ! empty( $data['expiration'] ) ) {
 
 			$exp = array_filter( array_map( 'absint', array_map( 'trim', explode( '/', $data['expiration'] ) ) ) );
@@ -332,7 +328,6 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 			if ( 2 !== count( $exp ) ) {
 				$errs->add( 'llms_sg_checkout_invalid_expiration', __( 'Invalid expiration date.', 'lifterlms' ) );
 			}
-
 		}
 
 		if ( $errs->has_errors() ) {
@@ -347,11 +342,11 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 * Handle a "pending" order
 	 *
 	 * This method is called called by `LLMS_Controller_Orders::create_pending_order()` on checkout form submission
-	 * 
+	 *
 	 * All data will be validated before it's passed to this method.
 	 *
 	 * In this method, the plugin should interact with the payment gateway to process the transaction.
-	 * 
+	 *
 	 * If your gateway handles payment processing entirely off site (like PayPal) this function should end with a redirect to the gateway's
 	 * payment processing location.
 	 *
@@ -359,7 +354,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 * finalize the transaction and redirect the user based on logic in the LiftreLMS Core.
 	 *
 	 * @since [version]
-	 * 
+	 *
 	 * @param LLMS_Order        $order   Order object.
 	 * @param LLMS_Access_Plan  $plan    Access plan object.
 	 * @param LLMS_Student      $student Student object.
@@ -417,9 +412,9 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 * You can determine if it's a one-time or recurring payment using
 		 * `$plan->is_recurring()`
 		 */
-		$req = llms_sample_gateway()->api( 
+		$req = llms_sample_gateway()->api(
 			'/transactions',
-			array_merge( 
+			array_merge(
 				array(
 					'email'  => $student->get( 'email' ),
 					'amount' => $total,
@@ -463,9 +458,9 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 
 		/**
 		 * Store a customer ID
-	 	 * 
-	 	 * This is displayed on the WP admin panel and can be used to create links to the customer
-	 	 * on the gateway provider's admin panel or dashboard.
+		 *
+		 * This is displayed on the WP admin panel and can be used to create links to the customer
+		 * on the gateway provider's admin panel or dashboard.
 		 */
 		$order->set( 'gateway_customer_id', $res['customer_id'] );
 
@@ -473,9 +468,9 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 * Store a source ID
 		 *
 		 * The source might be a credit or debit card, a payment token, bank account, etc...
-	 	 * 
-	 	 * This is displayed on the WP admin panel and can be used to create links to the source
-	 	 * on the gateway provider's admin panel or dashboard.
+		 *
+		 * This is displayed on the WP admin panel and can be used to create links to the source
+		 * on the gateway provider's admin panel or dashboard.
 		 */
 		$order->set( 'gateway_source_id', $res['source_id'] );
 
@@ -504,7 +499,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 *
 	 * This is used by `handle_pending_order()` during all transactions and later by `handle_recurring_transaction()`
 	 * when a recurring payment is triggered by the background process scheduler.
-	 * 
+	 *
 	 * @since [version]
 	 *
 	 * @param LLMS_Order $order              Order object
@@ -563,11 +558,11 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 * Gateways can override this to return a URL to a customer permalink on the gateway's website
 	 *
 	 * View a completed order on the WP admin panel to see the stored IDs converted to clickable links.
-	 * 
+	 *
 	 * If this is not defined, it will just return the supplied ID
 	 *
 	 * @since 3.0.0
-	 * 
+	 *
 	 * @param string $customer_id Gateway's customer ID
 	 * @param string $api_mode    Link to either the live or test site for the gateway, where applicable.
 	 * @return string
@@ -578,13 +573,13 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 
 	/**
 	 * Gateways can override this to return a URL to a source permalink on the gateway's website
-	 * 
+	 *
 	 * View a completed order on the WP admin panel to see the stored IDs converted to clickable links.
-	 * 
+	 *
 	 * If this is not defined, it will just return the supplied ID
 	 *
 	 * @since 3.0.0
-	 * 
+	 *
 	 * @param string $source_id Gateway's source ID
 	 * @param string $api_mode  Link to either the live or test site for the gateway, where applicable.
 	 * @return string
@@ -595,13 +590,13 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 
 	/**
 	 * Gateways can override this to return a URL to a subscription permalink on the gateway's website
-	 * 
+	 *
 	 * View a completed order on the WP admin panel to see the stored IDs converted to clickable links.
-	 * 
+	 *
 	 * If this is not defined, it will just return the supplied ID
 	 *
 	 * @since 3.0.0
-	 * 
+	 *
 	 * @param string $subscription_id Gateway's source ID
 	 * @param string $api_mode        Link to either the live or test site for the gateway, where applicable.
 	 * @return string
@@ -612,13 +607,13 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 
 	/**
 	 * Gateways can override this to return a URL to a transaction permalink on the gateway's website
-	 * 
+	 *
 	 * View a completed order on the WP admin panel to see the stored IDs converted to clickable links.
-	 * 
+	 *
 	 * If this is not defined, it will just return the supplied ID
 	 *
 	 * @since 3.0.0
-	 * 
+	 *
 	 * @param string $transaction_id Gateway's source ID
 	 * @param string $api_mode       Link to either the live or test site for the gateway, where applicable.
 	 * @return string
@@ -629,7 +624,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 
 	/**
 	 * Called by scheduled actions to charge an order for a scheduled recurring transaction
-	 * 
+	 *
 	 * This function must be defined by gateways which support recurring transactions.
 	 *
 	 * @param LLMS_Order $order Order object.
@@ -637,11 +632,11 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 */
 	public function handle_recurring_transaction( $order ) {
 
-		$req = llms_sample_gateway()->api( 
+		$req = llms_sample_gateway()->api(
 			'/transactions',
 			array(
 				'source'   => $order->get( 'gateway_source_id' ),
-				'customer' => $order->get( 'gateway_customer_id'),
+				'customer' => $order->get( 'gateway_customer_id' ),
 				'amount'   => $order->get_price( 'total', array(), 'float' ),
 			),
 		);
@@ -673,7 +668,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 * the refund via the provider's API and recording the data back to the WP database.
 	 *
 	 * @since 3.0.0
-	 * 
+	 *
 	 * @param LLMS_Transaction $transaction Transaction object.
 	 * @param float            $amount      Amount to refund.
 	 * @param string           $note        Optional refund note to pass to the gateway.
@@ -683,9 +678,9 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 
 		$this->log( 'Sample gateway `process_refund()` started', $transaction, $amount, $note );
 
-		$req = llms_sample_gateway()->api( 
+		$req = llms_sample_gateway()->api(
 			'/refunds',
-			array_merge( 
+			array_merge(
 				array(
 					'amount' => $amount,
 					'reason' => $note,
@@ -700,7 +695,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 			return $res;
 		}
 
-		$this->log('Sample gateway `process_refund()` finished', $req );
+		$this->log( 'Sample gateway `process_refund()` finished', $req );
 		return $res['id'];
 
 	}

@@ -10,7 +10,7 @@
  * In a real-world scenario the payment gateway this plugin interacts with would be a full
  * api provided by the payment provider.
  *
- * @package LifterLMS/Classes
+ * @package LifterLMS_Sample_Gateway/Fake_API/Clasess
  *
  * @since [version]
  * @version [version]
@@ -30,23 +30,31 @@ class LLMS_SG_Mock_REST extends WP_REST_Controller {
 
 		$namespace = 'sg-mock/v1';
 
-		register_rest_route( $namespace, '/transactions', array(
+		register_rest_route(
+			$namespace,
+			'/transactions',
 			array(
-				'methods'  => WP_REST_Server::CREATABLE,
-				'callback' => array( $this, 'transactions' ),
-				'args'     => $this->get_endpoint_args_for_item_schema( true ),
-				'permission_callback' => array( $this, 'permission_callback' ),
-			),
-		) );
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'transactions' ),
+					'args'                => $this->get_endpoint_args_for_item_schema( true ),
+					'permission_callback' => array( $this, 'permission_callback' ),
+				),
+			)
+		);
 
-		register_rest_route( $namespace, '/refunds', array(
+		register_rest_route(
+			$namespace,
+			'/refunds',
 			array(
-				'methods'  => WP_REST_Server::CREATABLE,
-				'callback' => array( $this, 'refunds' ),
-				'args'     => $this->get_endpoint_args_for_item_schema( true ),
-				'permission_callback' => array( $this, 'permission_callback' ),
-			),
-		) );
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'refunds' ),
+					'args'                => $this->get_endpoint_args_for_item_schema( true ),
+					'permission_callback' => array( $this, 'permission_callback' ),
+				),
+			)
+		);
 
 	}
 
@@ -55,17 +63,19 @@ class LLMS_SG_Mock_REST extends WP_REST_Controller {
 		$key = $request->get_header( 'x_api_key' );
 		if ( 'SECRET' !== $key ) {
 			return new WP_Error( 'api-key-error', __( 'Missing or invalid API Key required.', 'lifterlms' ), array( 'status' => 401 ) );
- 		}
+		}
 
 		return true;
 	}
 
 	public function refunds( $request ) {
-		return rest_ensure_response( array(
-			'id'      => uniqid( 'refund_' ),
-			'created' => time(),
-			'amount'  => $request['amount'],
-		) );
+		return rest_ensure_response(
+			array(
+				'id'      => uniqid( 'refund_' ),
+				'created' => time(),
+				'amount'  => $request['amount'],
+			)
+		);
 	}
 
 	public function transactions( $request ) {
@@ -75,19 +85,21 @@ class LLMS_SG_Mock_REST extends WP_REST_Controller {
 		// Success on initial payment.
 		if ( '4242424242424242' === $request['number'] ) {
 			$status = 'success';
-		// Recurring payments succeed 50% of the time.
+			// Recurring payments succeed 50% of the time.
 		} elseif ( $request['source'] && 1 === rand( 1, 2 ) ) {
 			$status = 'success';
 		}
 
-		return rest_ensure_response( array(
-			'id'          => uniqid( 'transaction_' ),
-			'created'     => time(),
-			'customer_id' => uniqid( 'customer_' ),
-			'source_id'   => uniqid( 'source_' ),
-			'amount'      => $request['amount'],
-			'status'      => $status,
-		) );
+		return rest_ensure_response(
+			array(
+				'id'          => uniqid( 'transaction_' ),
+				'created'     => time(),
+				'customer_id' => uniqid( 'customer_' ),
+				'source_id'   => uniqid( 'source_' ),
+				'amount'      => $request['amount'],
+				'status'      => $status,
+			)
+		);
 	}
 
 }

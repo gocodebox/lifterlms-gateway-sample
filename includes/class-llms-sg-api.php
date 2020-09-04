@@ -1,6 +1,6 @@
 <?php
 /**
-* Make requests to the Sample Payment Gateway API 
+ * Make requests to the Sample Payment Gateway API
  *
  * This makes request to a *MOCK* API that returns random object IDs which
  * can be used to illustrate how to construct a LifterLMS Payment Gateway which (probably)
@@ -13,6 +13,8 @@
  * dependencies to require in order to make a (generally) small number of API requests.
  *
  * That's a preference, it's not right or wrong.
+ *
+ * @package LifterLMS_Sample_Gateway/Classes
  *
  * @since [version]
  * @version [version]
@@ -29,9 +31,9 @@ class LLMS_SG_API extends LLMS_Abstract_API_Handler {
 
 	/**
 	 * Parse the body of the response and set a success/error
-	 * 
+	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param array $response Raw API response.
 	 * @return array
 	 */
@@ -42,7 +44,7 @@ class LLMS_SG_API extends LLMS_Abstract_API_Handler {
 
 		// API Responded with an error.
 		if ( $code > 201 ) {
-			return $this->set_error( 
+			return $this->set_error(
 				! empty( $body['message'] ) ? $body['message'] : __( 'Unknown Error', 'lifterlms' ),
 				! empty( $body['code'] ) ? $body['code'] : 'unknown-error',
 				$response
@@ -63,9 +65,9 @@ class LLMS_SG_API extends LLMS_Abstract_API_Handler {
 	 *
 	 * It may be fine to pass an array directly to the API or maybe it needs to be massaged in some
 	 * way, that'll be up to you to determine based on the API you're interacting with.
-	 * 
+	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param array  $data     Request body.
 	 * @param string $method   Request method.
 	 * @param string $resource Requested resource.
@@ -79,7 +81,7 @@ class LLMS_SG_API extends LLMS_Abstract_API_Handler {
 	 * Set request headers
 	 *
 	 * @since [version]
-	 * 
+	 *
 	 * @param array  $headers  Default request headers.
 	 * @param string $resource Requested resource.
 	 * @param string $method   Request method.
@@ -94,15 +96,15 @@ class LLMS_SG_API extends LLMS_Abstract_API_Handler {
 
 	/**
 	 * Set the request URL
-	 * 
+	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param string $resource Requested resource.
 	 * @param string $method   Request method.
 	 * @return string
 	 */
 	protected function set_request_url( $resource, $method ) {
-		return rest_url( sprintf( 'sg-mock/v1%s', $resource )  );
+		return rest_url( sprintf( 'sg-mock/v1%s', $resource ) );
 	}
 
 }

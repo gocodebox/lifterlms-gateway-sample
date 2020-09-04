@@ -1,10 +1,10 @@
 <?php
 /**
- * File Summary
+ * This is the main sample gateway plugin class
  *
- * File description.
+ * This singleton acts as a bootstrap to load files, add initializing actions, etc...
  *
- * @package LifterLMS/Classes
+ * @package LifterLMS_Sample_Gateway/Classes
  *
  * @since [version]
  * @version [version]
@@ -71,11 +71,14 @@ final class LifterLMS_Sample_Gateway {
 		register_deactivation_hook( LLMS_SAMPLE_GATEWAY_PLUGIN_FILE, array( $this, 'deactivate' ) );
 
 		// Register the mock REST API used by the LLMS_SG_API class. When creating your own gateway you don't need this and can delete this hook/function/class/containing directory.
-		add_action( 'rest_api_init', function() {
-			require_once LLMS_SAMPLE_GATEWAY_PLUGIN_DIR . 'fake-rest-api/class-llms-sg-mock-rest.php';
-			$api = new LLMS_SG_Mock_REST();
-			$api->register_routes();
-		} );
+		add_action(
+			'rest_api_init',
+			function() {
+				require_once LLMS_SAMPLE_GATEWAY_PLUGIN_DIR . 'fake-rest-api/class-llms-sg-mock-rest.php';
+				$api = new LLMS_SG_Mock_REST();
+				$api->register_routes();
+			}
+		);
 
 	}
 
