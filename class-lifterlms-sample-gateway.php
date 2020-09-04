@@ -80,6 +80,20 @@ final class LifterLMS_Sample_Gateway {
 	}
 
 	/**
+	 * Initialize and make a new API request.
+	 *
+	 * @since [version]
+	 *
+	 * @param string $resource Resource endpoint/path for the request.
+	 * @param array  $data     Associative array of data to pass in the request body.
+	 * @param string $method   Request method.
+	 * @return LLMS_SG_API
+	 */
+	public function api( $resource, $data, $method = 'POST' ) {
+		return new LLMS_SG_API( $resource, $data, $method );
+	}
+
+	/**
 	 * Determines whether or not the plugin's dependencies are met
 	 *
 	 * This stub checks to see if the minimum required version of LifterLMS is installed

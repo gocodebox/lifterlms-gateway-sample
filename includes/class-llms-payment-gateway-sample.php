@@ -20,6 +20,16 @@ defined( 'ABSPATH' ) || exit;
 class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 
 	/**
+	 * Each option defined in the gateway settings should be defined as a protected class variable
+	 *
+	 * The value defined here is used as the default when no value is stored in the database.
+	 */
+	protected $checkbox_option = '';
+	protected $live_api_key    = '';
+	protected $select_option   = '';
+	protected $test_api_key    = '';
+
+	/**
 	 * Constructor
 	 *
 	 * This method will configure class variables and attach all necessary hooks.
@@ -236,6 +246,20 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	}
 
 	/**
+	 * Retrieve the API Key for the current API mode
+	 *
+	 * @since [version]
+	 *
+	 * @return string
+	 */
+	public function get_api_key() {
+		$mode          = $this->get_api_mode();
+		$option        = sprintf( '%s_api_key', $mode ); // Option name.
+		$secure_option = sprintf( 'LLMS_SAMPLE_GATEWAY_%s_API_KEY', strtoupper( $mode ) ); // "Secure" option name.
+		return $this->get_option( $option, $secure_option );
+	}
+
+	/**
 	 * Output gateway's fields on the frontend checkout form
 	 *
 	 * This function is called automatically by the checkout form template in LifterLMS
@@ -362,88 +386,270 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 			return llms_add_notice( $card_info->get_error_message(), 'error' );
 		}
 
+		/**
+		 * We can also add additional custom validations that may not have anything to do with the card.
+		 *
+		 * For example, the gateway may have minimum and maximum transaction values.
+		 *
+		 * For our example gateway we can only process transactions greater than $0.50 and less than $1000.00.
+		 *
+		 * This obviously gets more complicated when you take currency into account because gateways probably
+		 * have different requirements based on currency.
+		 */
+		$total    = $order->get_price( 'total', array(), 'float' );
+		$currency = $order->get( 'currency' );
+		if ( $total < 0.50 ) {
+			$this->log( 'Sample Gateway `handle_pending_order()` ended with validation errors', 'Less than minimum order amount.' );
+			return llms_add_notice( sprintf( _x( 'This gateway cannot process %1$s transactions for less than %2$s.', 'min transaction amount error', 'lifterlms-stripe' ), $currency, llms_price_raw( $min ) ), 'error' );
+		} elseif ( $total > 1000.00 ) {
+			$this->log( 'Sample Gateway `handle_pending_order()` ended with validation errors', 'Greater than minimum order amount.' );
+			return llms_add_notice( sprintf( _x( 'This gateway cannot process %1$s transactions for more than %2$s.', 'max transaction amount error', 'lifterlms-stripe' ), $currency, llms_price_raw( self::MAX_AMOUNT ) ), 'error' );
+		}
 
+		/**
+		 * Make the API request to the gateway provider.
+		 *
+		 * **Remember that our example is not a real API!**
+		 *
+		 * You'll need to add data based on the provider's requirements
+		 * and will likely need to handle recurring and one-time payments differently.
+		 *
+		 * You can determine if it's a one-time or recurring payment using
+		 * `$plan->is_recurring()`
+		 */
+		$req = llms_sample_gateway()->api( 
+			'/transactions',
+			array_merge( 
+				array(
+					'email'  => $student->get( 'email' ),
+					'amount' => $total,
+				),
+				$card_info
+			)
+		);
 
+		/**
+		 * Handle Errors.
+		 *
+		 * Try checkout with no API key saved in the Sample Gateway settings to see it in action.
+		 */
+		if ( $req->is_error() ) {
+			$this->log( 'Sample Gateway `handle_pending_order()` ended with api request errors', $req->get_result() );
+			return llms_add_notice( $req->get_error_message(), 'error' );
+		}
 
+		$res = $req->get_result();
 
+		/**
+		 * Our Mock API will automatically succeed when using CC number 4242424242424242
+		 *
+		 * Any other card number is automatically declined.
+		 *
+		 * If the API doesn't return a success we'll output an error.
+		 */
+		if ( 'success' !== $res['status'] ) {
+			$this->log( 'Sample Gateway `handle_pending_order()` ended with card errors', $res );
+			return llms_add_notice( sprintf( __( 'Card error: %s', 'lifterlms' ), $res['status'] ), 'error' );
+		}
 
+		/**
+		 * Success!
+		 *
+		 * Record gateway data on the order and complete the transaction.
+		 */
 
+		// You can add notes to the order.
+		$order->add_note( sprintf( __( 'Gaetway customer "%s" created or updated.', 'lifterlms-stripe' ), $res['customer_id'] ) );
 
+		/**
+		 * Store a customer ID
+	 	 * 
+	 	 * This is displayed on the WP admin panel and can be used to create links to the customer
+	 	 * on the gateway provider's admin panel or dashboard.
+		 */
+		$order->set( 'gateway_customer_id', $res['customer_id'] );
 
+		/**
+		 * Store a source ID
+		 *
+		 * The source might be a credit or debit card, a payment token, bank account, etc...
+	 	 * 
+	 	 * This is displayed on the WP admin panel and can be used to create links to the source
+	 	 * on the gateway provider's admin panel or dashboard.
+		 */
+		$order->set( 'gateway_source_id', $res['source_id'] );
 
+		/**
+		 * Store a subscription ID
+		 *
+		 * If the gateway has it's own subscription ID this can be stored here with this meta key.
+		 *
+		 * We aren't using this in our example but it's here to document all potential keys LifterLMS
+		 * looks for and uses.
+		 */
+		// $order->set( 'gateway_subscription_id', $res['subscription_id'] );
 
+		// Record the transaction.
+		$this->record_transaction( $order, $res, 'initial' );
 
-
-		// // Get the token or saved card id.
-		// $token = llms_filter_input( INPUT_POST, 'llms_stripe_token', FILTER_SANITIZE_STRING );
-		// if ( ! $token ) {
-		// 	$token = llms_filter_input( INPUT_POST, 'llms_stripe_saved_card_id', FILTER_SANITIZE_STRING );
-		// }
-
-		// if ( ! $token ) {
-		// 	return llms_add_notice( __( 'Missing payment method details.', 'lifterlms-stripe' ), 'error' );
-		// }
-
-		// // do some gateway specific validation before proceeding.
-		// $total    = $order->get_price( 'total', array(), 'float' );
-		// $currency = $order->get( 'currency' );
-		// $min      = llms_stripe_get_transaction_minimum( $currency );
-		// if ( $total < $min ) {
-		// 	// Translators: %1$s = Currency code; %2$s = minimum transaction amount.
-		// 	return llms_add_notice( sprintf( _x( 'Stripe cannot process %1$s transactions for less than %2$s.', 'min transaction amount error', 'lifterlms-stripe' ), $currency, llms_price_raw( $min ) ), 'error' );
-		// } elseif ( llms_stripe_get_amount( $total, $currency ) > self::MAX_AMOUNT ) {
-		// 	// Translators: %1$s = Currency code; %2$s = maximum transaction amount.
-		// 	return llms_add_notice( sprintf( _x( 'Stripe cannot process %1$s transactions for more than %2$s.', 'max transaction amount error', 'lifterlms-stripe' ), $currency, llms_price_raw( self::MAX_AMOUNT ) ), 'error' );
-		// }
-
-		// // create / update the customer in Stripe.
-		// $customer_id = $this->handle_customer( $order->get( 'user_id' ), $token );
-		// if ( is_wp_error( $customer_id ) ) {
-		// 	$this->log( 'Stripe `handle_pending_order()` finished with errors', '$customer_id', $customer_id );
-		// 	return llms_add_notice( $customer_id->get_error_message(), 'error' );
-		// }
-
-		// // Translators: %s = Stripe customer ID.
-		// $order->add_note( sprintf( __( 'Stripe Customer "%s" created or updated.', 'lifterlms-stripe' ), $customer_id ) );
-
-		// $order->set( 'gateway_customer_id', $customer_id );
-		// $order->set( 'gateway_source_id', llms_filter_input( INPUT_POST, 'llms_stripe_card_id', FILTER_SANITIZE_STRING ) );
-
-		// $intents = new LLMS_Stripe_Intents( $order );
-
-		// // Setup the intent for a free trial.
-		// if ( floatval( 0 ) === $order->get_initial_price( array(), 'float' ) && $order->has_trial() ) {
-		// 	$intent = $intents->setup();
-		// } else {
-		// 	// create the payment intent.
-		// 	$intent = $intents->create( 'initial' );
-		// }
-
-		// if ( is_wp_error( $intent ) ) {
-		// 	$this->log( 'Stripe `handle_pending_order()` finished with errors', '$intent', $intent );
-		// 	return llms_add_notice( $intent->get_error_message(), 'error' );
-		// }
-
-		// if ( 'succeeded' === $intent->status ) {
-
-		// 	$intents->complete( $intent, 'initial' );
-		// 	$this->log( $intent, 'Stripe `handle_pending_order()` finished' );
-		// 	$this->complete_transaction( $order );
-
-		// } elseif ( 'requires_action' === $intent->status ) {
-
-		// 	llms_redirect_and_exit( llms_confirm_payment_url( $order->get( 'order_key' ) ) );
-
-		// }
+		/**
+		 * Trigger order "completion".
+		 */
+		$this->complete_transaction( $order );
 
 	}
 
+	/**
+	 * Record a transaction on the order
+	 *
+	 * This is used by `handle_pending_order()` during all transactions and later by `handle_recurring_transaction()`
+	 * when a recurring payment is triggered by the background process scheduler.
+	 * 
+	 * @since [version]
+	 *
+	 * @param LLMS_Order $order              Order object
+	 * @param array      $gateway_txn_result Associative array of transaction result data from our mock api.
+	 * @param string     $type               The type of payment. Either "initial" for the first payment on an order or "recurring" for recurring payments.
+	 * @return LLMS_Transaction
+	 */
+	protected function record_transaction( $order, $gateway_txn_result, $type = 'initial' ) {
 
+		$payment_type = 'single';
+		if ( $order->is_recurring() ) {
+			$payment_type = ( $order->has_trial() && 'initial' === $type ) ? 'trial' : 'recurring';
+		}
 
+		$args = array(
+			'amount'       => $gateway_txn_result['amount'],
+			'customer_id'  => $order->get( 'gateway_customer_id' ),
+			'status'       => sprintf( 'llms-txn-%s', 'success' === $gateway_txn_result['status'] ? 'succeeded' : 'failed' ),
+			'payment_type' => $payment_type,
+		);
 
+		$args['completed_date']     = date( 'Y-m-d H:i:s', $gateway_txn_result['created'] );
+		$args['source_id']          = $gateway_txn_result['source_id'];
+		$args['source_description'] = 'Visa ending in 4242'; // This is a human-readable name for the card. Don't save the card number in the DB, okay!
+		$args['transaction_id']     = $gateway_txn_result['id'];
 
+		if ( 'succeeded' === $gateway_txn_result['status'] ) {
 
+			$order->add_note(
+				sprintf(
+					// Translators: %1$s = Payment type; $2$s = Payment source ID; %3$s = Charge ID.
+					__( 'Charge attempt for %1$s payment succeeded! [Charge ID: %2$s]', 'lifterlms-stripe' ),
+					$payment_type,
+					$gateway_txn_result['id']
+				)
+			);
 
+		} else {
+
+			$order->add_note(
+				sprintf(
+					// Translators: %1$s = Payment type; $2$s = Payment source ID; $3$s = Error message; %4$s = Charge ID.
+					__( 'Charge attempt for %1$s failed. [Charge ID: %2$s]', 'lifterlms-stripe' ),
+					$payment_type,
+					$gateway_txn_result['id']
+				)
+			);
+
+		}
+
+		return $order->record_transaction( $args );
+
+	}
+
+	/**
+	 * Gateways can override this to return a URL to a customer permalink on the gateway's website
+	 *
+	 * View a completed order on the WP admin panel to see the stored IDs converted to clickable links.
+	 * 
+	 * If this is not defined, it will just return the supplied ID
+	 *
+	 * @since 3.0.0
+	 * 
+	 * @param string $customer_id Gateway's customer ID
+	 * @param string $api_mode    Link to either the live or test site for the gateway, where applicable.
+	 * @return string
+	 */
+	public function get_customer_url( $customer_id, $api_mode = 'live' ) {
+		return sprintf( 'https://dashboard.myfakepaymentprovider.com/%1$s/customers/%2$s', $api_mode, $customer_id );
+	}
+
+	/**
+	 * Gateways can override this to return a URL to a source permalink on the gateway's website
+	 * 
+	 * View a completed order on the WP admin panel to see the stored IDs converted to clickable links.
+	 * 
+	 * If this is not defined, it will just return the supplied ID
+	 *
+	 * @since 3.0.0
+	 * 
+	 * @param string $source_id Gateway's source ID
+	 * @param string $api_mode  Link to either the live or test site for the gateway, where applicable.
+	 * @return string
+	 */
+	public function get_source_url( $source_id, $api_mode = 'live' ) {
+		return sprintf( 'https://dashboard.myfakepaymentprovider.com/%1$s/sources/%2$s', $api_mode, $source_id );
+	}
+
+	/**
+	 * Gateways can override this to return a URL to a subscription permalink on the gateway's website
+	 * 
+	 * View a completed order on the WP admin panel to see the stored IDs converted to clickable links.
+	 * 
+	 * If this is not defined, it will just return the supplied ID
+	 *
+	 * @since 3.0.0
+	 * 
+	 * @param string $subscription_id Gateway's source ID
+	 * @param string $api_mode        Link to either the live or test site for the gateway, where applicable.
+	 * @return string
+	 */
+	public function get_subscription_url( $subscription_id, $api_mode = 'live' ) {
+		return sprintf( 'https://dashboard.myfakepaymentprovider.com/%1$s/subscriptions/%2$s', $api_mode, $subscription_id );
+	}
+
+	/**
+	 * Gateways can override this to return a URL to a transaction permalink on the gateway's website
+	 * 
+	 * View a completed order on the WP admin panel to see the stored IDs converted to clickable links.
+	 * 
+	 * If this is not defined, it will just return the supplied ID
+	 *
+	 * @since 3.0.0
+	 * 
+	 * @param string $transaction_id Gateway's source ID
+	 * @param string $api_mode       Link to either the live or test site for the gateway, where applicable.
+	 * @return string
+	 */
+	public function get_transaction_url( $transaction_id, $api_mode = 'live' ) {
+		return sprintf( 'https://dashboard.myfakepaymentprovider.com/%1$s/transactions/%2$s', $api_mode, $transaction_id );
+	}
+
+	/**
+	 * Called by scheduled actions to charge an order for a scheduled recurring transaction
+	 * 
+	 * This function must be defined by gateways which support recurring transactions.
+	 *
+	 * @param LLMS_Order $order Order object.
+	 * @return   mixed
+	 */
+	public function handle_recurring_transaction( $order ) {
+
+		$req = llms_sample_gateway()->api( 
+			'/transactions',
+			array(
+				'source'   => $order->get( 'gateway_source_id' ),
+				'customer' => $order->get( 'gateway_customer_id'),
+				'amount'   => $order->get_price( 'total', array(), 'float' ),
+			),
+		);
+
+		// Record the transaction.
+		$this->record_transaction( $order, $res, 'initial' );		
+
+	}
 
 
 
@@ -475,62 +681,6 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	public function confirm_pending_order( $order ) {}
 
 	/**
-	 * Gateways can override this to return a URL to a customer permalink on the gateway's website
-	 * If this is not defined, it will just return the supplied ID
-	 *
-	 * @param    string $customer_id  Gateway's customer ID
-	 * @param    string $api_mode     Link to either the live or test site for the gateway, where applicable
-	 * @return   string
-	 * @since    3.0.0
-	 * @version  3.0.0
-	 */
-	public function get_customer_url( $customer_id, $api_mode = 'live' ) {
-		return $customer_id;
-	}
-
-	/**
-	 * Gateways can override this to return a URL to a source permalink on the gateway's website
-	 * If this is not defined, it will just return the supplied ID
-	 *
-	 * @param    string $source_id   Gateway's source ID
-	 * @param    string $api_mode    Link to either the live or test site for the gateway, where applicable
-	 * @return   string
-	 * @since    3.0.0
-	 * @version  3.0.0
-	 */
-	public function get_source_url( $source_id, $api_mode = 'live' ) {
-		return $source_id;
-	}
-
-	/**
-	 * Gateways can override this to return a URL to a subscription permalink on the gateway's website
-	 * If this is not defined, it will just return the supplied ID
-	 *
-	 * @param    string $subscription_id  Gateway's subscription ID
-	 * @param    string $api_mode         Link to either the live or test site for the gateway, where applicable
-	 * @return   string
-	 * @since    3.0.0
-	 * @version  3.0.0
-	 */
-	public function get_subscription_url( $subscription_id, $api_mode = 'live' ) {
-		return $subscription_id;
-	}
-
-	/**
-	 * Gateways can override this to return a URL to a transaction permalink on the gateway's website
-	 * If this is not defined, it will just return the supplied ID
-	 *
-	 * @param    string $transaction_id  Gateway's transaction ID
-	 * @param    string $api_mode        Link to either the live or test site for the gateway, where applicable
-	 * @return   string
-	 * @since    3.0.0
-	 * @version  3.0.0
-	 */
-	public function get_transaction_url( $transaction_id, $api_mode = 'live' ) {
-		return $transaction_id;
-	}
-
-	/**
 	 * Called when the Update Payment Method form is submitted from a single order view on the student dashboard
 	 *
 	 * Gateways should do whatever the gateway needs to do to validate the new payment method and save it to the order
@@ -549,17 +699,6 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	public function handle_payment_source_switch( $order, $form_data = array() ) {
 		return llms_add_notice( sprintf( esc_html__( 'The selected payment Gateway "%s" does not support payment method switching.', 'lifterlms' ), $this->get_title() ), 'error' );
 	}
-
-	/**
-	 * Called by scheduled actions to charge an order for a scheduled recurring transaction
-	 * This function must be defined by gateways which support recurring transactions
-	 *
-	 * @param    obj $order   Instance LLMS_Order for the order being processed
-	 * @return   mixed
-	 * @since    3.0.0
-	 * @version  3.0.0
-	 */
-	public function handle_recurring_transaction( $order ) {}
 
 	/**
 	 * Called when refunding via a Gateway

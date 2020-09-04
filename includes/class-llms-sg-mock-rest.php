@@ -28,32 +28,51 @@ class LLMS_SG_Mock_REST extends WP_REST_Controller {
 
 	public function register_routes() {
 
-		$namespace = 'sg-mock';
+		$namespace = 'sg-mock/v1';
 		
 		register_rest_route( $namespace, '/transactions', array(
 			array(
 				'methods'  => WP_REST_Server::CREATABLE,
-				'callback' => array( $this, 'create_item' ),
+				'callback' => array( $this, 'transactions' ),
 				'args'     => $this->get_endpoint_args_for_item_schema( true ),
+				'permission_callback' => array( $this, 'permission_callback' ),
 			),
 		) );
 
 		register_rest_route( $namespace, '/refunds', array(
 			array(
 				'methods'  => WP_REST_Server::CREATABLE,
-				'callback' => array( $this, 'create_item' ),
+				'callback' => array( $this, 'refunds' ),
 				'args'     => $this->get_endpoint_args_for_item_schema( true ),
+				'permission_callback' => array( $this, 'permission_callback' ),
 			),
 		) );
 
-		register_rest_route( $namespace, '/customers', array(
-			array(
-				'methods'  => WP_REST_Server::CREATABLE,
-				'callback' => array( $this, 'create_item' ),
-				'args'     => $this->get_endpoint_args_for_item_schema( true ),
-			),
-		) );
+	}
 
+	public function permission_callback( $request ) {
+
+		$key = $request->get_header( 'x_api_key' );
+		if ( 'SECRET' !== $key ) {
+			return new WP_Error( 'api-key-error', __( 'Missing or invalid API Key required.', 'lifterlms' ), array( 'status' => 401 ) );
+ 		}
+
+		return true;
+	}
+
+	public function refunds( $request ) {
+		return $this->get_response( $request, 'refund' );
+	}
+
+	public function transactions( $request ) {
+		return rest_ensure_response( array(
+			'id'          => uniqid( 'transaction_' ),
+			'created'     => time(),
+			'customer_id' => uniqid( 'customer_' ),
+			'source_id'   => uniqid( 'source_' ),
+			'amount'      => $request['amount'],
+			'status'      => '4242424242424242' === $request['number'] ? 'success' : 'declined',
+		) );
 	}
 
 }

@@ -15,6 +15,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+llms_print_notice( 'Use card number "4242424242424242" for automatic "success". Any other card number will be "declined".', 'debug' );
+
 llms_form_field( array(
 	'columns'         => 12,
 	'disabled'        => $selected ? false : true,

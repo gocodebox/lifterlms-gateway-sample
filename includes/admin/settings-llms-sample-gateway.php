@@ -81,7 +81,7 @@ $fields[] = array(
 $fields[] = array(
 	'id'            => $gateway->get_option_name( 'test_api_key' ),
 	'title'         => __( 'Sandbox API Key', 'lifterlms' ),
-	'desc'          => '<br>' . sprintf( __( 'Need help finding your API key? %1$sLearn how.%2$s', 'lifterlms' ), '<a href="#documentation-link">', '</a>' ),
+	'desc'          => '<br>' . __( 'Use API Key "SECRET" for automatic success with the mock API. Leave blank or enter anything else to see error handlers.', 'lifterlms' ),
 	'type'          => 'text',
 	'secure_option' => 'LLMS_SAMPLE_GATEWAY_TEST_API_KEY'
 );
