@@ -61,17 +61,30 @@ class LLMS_SG_Mock_REST extends WP_REST_Controller {
 	}
 
 	public function refunds( $request ) {
-		return $this->get_response( $request, 'refund' );
+		return rest_ensure_response( array(
+			'id'      => uniqid( 'refund_' ),
+			'created' => time(),
+			'amount'  => $request['amount'],
+		) );
 	}
 
 	public function transactions( $request ) {
+
+		//
+		$status = 'declined';
+
+		// Success on initial payment and make all recurring transactions automatically succeed.
+		if ( '4242424242424242' === $request['number'] || 0 === strpos( $request['source'], 'source_' ) ) {
+			$status = 'success';
+		}
+
 		return rest_ensure_response( array(
 			'id'          => uniqid( 'transaction_' ),
 			'created'     => time(),
 			'customer_id' => uniqid( 'customer_' ),
 			'source_id'   => uniqid( 'source_' ),
 			'amount'      => $request['amount'],
-			'status'      => '4242424242424242' === $request['number'] ? 'success' : 'declined',
+			'status'      => $status,
 		) );
 	}
 

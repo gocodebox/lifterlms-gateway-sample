@@ -211,7 +211,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 			 * Denotes that users can process refunds from the order screen on the admin panel
 			 * of the LifterLMS site.
 			 */
-			'refunds'  => true,
+			'refunds' => true,
 
 			/**
 			 * Denotes that one-time payment access plans can be processed by this gateway.
@@ -656,71 +656,53 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 *
 		 * Notifications are *automatically sent* in this scenario.
 		 */
-		$this->record_transaction( $order, $res, 'initial' );
+		$this->record_transaction( $order, $req->get_result(), 'initial' );
 
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/**
-	 * Confirm a Payment
-	 * Called by LLMS_Controller_Orders->confirm_pending_order() on confirm form submission
-	 * Some validation is performed before passing to this function, as it's not required
-	 * gateways will likely doing further validations as are needed
-	 *
-	 * Not required if a confirmation isn't required by the Gateway
-	 * Stripe doesn't require this whereas PayPal does
-	 *
-	 * @param   obj $order   Instance LLMS_Order for the order being processed
-	 * @return  void
-	 * @since    3.0.0
-	 * @version  3.0.0
-	 */
-	public function confirm_pending_order( $order ) {}
-
-	/**
-	 * Called when the Update Payment Method form is submitted from a single order view on the student dashboard
-	 *
-	 * Gateways should do whatever the gateway needs to do to validate the new payment method and save it to the order
-	 * so that future payments on the order will use this new source
-	 *
-	 * This should be an abstract function but experience has taught me that no one will upgrade follow our instructions
-	 * and they'll end up with 500 errors and debug mode disabled and send me giant frustrated question marks
-	 *
-	 * @since    3.10.0
-	 *
-	 * @param    obj   $order      Instance of the LLMS_Order
-	 * @param    array $form_data  Additional data passed from the submitted form (EG $_POST)
-	 *
-	 * @return   null
-	 */
-	public function handle_payment_source_switch( $order, $form_data = array() ) {
-		return llms_add_notice( sprintf( esc_html__( 'The selected payment Gateway "%s" does not support payment method switching.', 'lifterlms' ), $this->get_title() ), 'error' );
 	}
 
 	/**
 	 * Called when refunding via a Gateway
-	 * This function must be defined by gateways which support refunds
-	 * This function is called by LLMS_Transaction->process_refund()
 	 *
-	 * @param    obj    $transaction  Instance of the LLMS_Transaction
-	 * @param    float  $amount       Amount to refund
-	 * @param    string $note         Optional refund note to pass to the gateway
-	 * @return   mixed
-	 * @since    3.0.0
-	 * @version  3.0.0
+	 * Refunds for a transaction can be always be made manually. In this situation the admin recrords the refund
+	 * in LifterLMS and is expected to also manually process a refund to the customer.
+	 *
+	 * If the payment provider supports refunds via an API request you can also enable "automatic" refunds. When
+	 * the gateway supports refunds there will be an additional button "Refund via ${$this->admin_title}".
+	 *
+	 * When a refund is processed via this button then this method will be called which is responsible for processing
+	 * the refund via the provider's API and recording the data back to the WP database.
+	 *
+	 * @since 3.0.0
+	 * 
+	 * @param LLMS_Transaction $transaction Transaction object.
+	 * @param float            $amount      Amount to refund.
+	 * @param string           $note        Optional refund note to pass to the gateway.
+	 * @return mixed
 	 */
-	public function process_refund( $transaction, $amount = 0, $note = '' ) {}
+	public function process_refund( $transaction, $amount = 0, $note = '' ) {
+
+		$this->log( 'Sample gateway `process_refund()` started', $transaction, $amount, $note );
+
+		$req = llms_sample_gateway()->api( 
+			'/refunds',
+			array_merge( 
+				array(
+					'amount' => $amount,
+					'reason' => $note,
+				),
+			)
+		);
+
+		$res = $req->get_result();
+
+		if ( $req->is_error() ) {
+			$this->log( 'Sample gateway `process_refund()` finished with errors', $req );
+			return $res;
+		}
+
+		$this->log('Sample gateway `process_refund()` finished', $req );
+		return $res['id'];
+
+	}
 
 }
