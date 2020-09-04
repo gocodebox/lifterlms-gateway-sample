@@ -45,7 +45,7 @@ class LLMS_SG_API extends LLMS_Abstract_API_Handler {
 		// API Responded with an error.
 		if ( $code > 201 ) {
 			return $this->set_error(
-				! empty( $body['message'] ) ? $body['message'] : __( 'Unknown Error', 'lifterlms' ),
+				! empty( $body['message'] ) ? $body['message'] : __( 'Unknown Error', 'lifterlms-sample-gateway' ),
 				! empty( $body['code'] ) ? $body['code'] : 'unknown-error',
 				$response
 			);

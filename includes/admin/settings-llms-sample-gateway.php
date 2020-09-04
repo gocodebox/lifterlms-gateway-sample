@@ -43,7 +43,7 @@ $fields[] = array(
 	 *
 	 * Allows HTML which might be useful for adding links to documentation related to the option.
 	 */
-	'desc'          => '<br>' . sprintf( __( 'Need help finding your API key? %1$sLearn how.%2$s', 'lifterlms' ), '<a href="#documentation-link">', '</a>' ),
+	'desc'          => '<br>' . sprintf( __( 'Need help finding your API key? %1$sLearn how.%2$s', 'lifterlms-sample-gateway' ), '<a href="#documentation-link">', '</a>' ),
 
 	/**
 	 * The type of setting field.
@@ -80,8 +80,8 @@ $fields[] = array(
  */
 $fields[] = array(
 	'id'            => $gateway->get_option_name( 'test_api_key' ),
-	'title'         => __( 'Sandbox API Key', 'lifterlms' ),
-	'desc'          => '<br>' . __( 'Use API Key "SECRET" for automatic success with the mock API. Leave blank or enter anything else to see error handlers.', 'lifterlms' ),
+	'title'         => __( 'Sandbox API Key', 'lifterlms-sample-gateway' ),
+	'desc'          => '<br>' . __( 'Use API Key "SECRET" for automatic success with the mock API. Leave blank or enter anything else to see error handlers.', 'lifterlms-sample-gateway' ),
 	'type'          => 'text',
 	'secure_option' => 'LLMS_SAMPLE_GATEWAY_TEST_API_KEY',
 );
@@ -93,8 +93,8 @@ $fields[] = array(
  */
 $fields[] = array(
 	'id'    => $gateway->get_option_name( 'checkbox_option' ),
-	'title' => __( 'Toggleable Gateway Setting', 'lifterlms' ),
-	'desc'  => __( 'Enable an optional gateway feature with a checkbox', 'lifterlms' ),
+	'title' => __( 'Toggleable Gateway Setting', 'lifterlms-sample-gateway' ),
+	'desc'  => __( 'Enable an optional gateway feature with a checkbox', 'lifterlms-sample-gateway' ),
 	'type'  => 'checkbox',
 );
 
@@ -103,13 +103,13 @@ $fields[] = array(
  */
 $fields[] = array(
 	'id'      => $gateway->get_option_name( 'select_option' ),
-	'title'   => __( 'Multiple Option Setting', 'lifterlms' ),
-	'desc'    => '<br>' . __( 'Add a gateway option with a dropdown.', 'lifterlms' ),
+	'title'   => __( 'Multiple Option Setting', 'lifterlms-sample-gateway' ),
+	'desc'    => '<br>' . __( 'Add a gateway option with a dropdown.', 'lifterlms-sample-gateway' ),
 	'type'    => 'select',
 	'options' => array(
-		'one'   => esc_html__( 'Option One', 'lifterlms' ),
-		'two'   => esc_html__( 'Option Two', 'lifterlms' ),
-		'three' => esc_html__( 'Option Three', 'lifterlms' ),
+		'one'   => esc_html__( 'Option One', 'lifterlms-sample-gateway' ),
+		'two'   => esc_html__( 'Option Two', 'lifterlms-sample-gateway' ),
+		'three' => esc_html__( 'Option Three', 'lifterlms-sample-gateway' ),
 	),
 );
 

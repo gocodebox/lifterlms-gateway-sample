@@ -115,7 +115,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 *
 		 * @var string
 		 */
-		$this->title = _x( 'Sample Payment Gateway', 'Gateway title', 'lifterlms-stripe' );
+		$this->title = _x( 'Sample Payment Gateway', 'Gateway title', 'lifterlms-sample-gateway' );
 
 		/**
 		 * The gateway's description displayed to users on the frontend of the website.
@@ -126,7 +126,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 *
 		 * @var string
 		 */
-		$this->description = __( 'Secure Sample Purchases', 'lifterlms-stripe' );
+		$this->description = __( 'Secure Sample Purchases', 'lifterlms-sample-gateway' );
 
 		/**
 		 * The title of the gateway as displayed on the admin panel
@@ -138,7 +138,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 *
 		 * @var string
 		 */
-		$this->admin_title = _x( 'Sample Payment Gateway', 'Gateway admin title', 'lifterlms' );
+		$this->admin_title = _x( 'Sample Payment Gateway', 'Gateway admin title', 'lifterlms-sample-gateway' );
 
 		/**
 		 * The payment gateway's description as displayed on the admin panel on settings screens.
@@ -147,7 +147,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 *
 		 * @var [type]
 		 */
-		$this->admin_description = __( 'A sample payment gateway used to document requirements for building a LifterLMS payment gateway.', 'lifterlms-stripe' );
+		$this->admin_description = __( 'A sample payment gateway used to document requirements for building a LifterLMS payment gateway.', 'lifterlms-sample-gateway' );
 
 		/**
 		 * The icon is an optional image displayed next to the title on the checkout screen.
@@ -159,7 +159,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 *
 		 * @var string
 		 */
-		$this->icon = '<img src="' . plugins_url( 'assets/img/icon.png', LLMS_SAMPLE_GATEWAY_PLUGIN_FILE ) . '" alt="' . __( 'Sample Payment Gateway Icon', 'lifterlms' ) . '">';
+		$this->icon = '<img src="' . plugins_url( 'assets/img/icon.png', LLMS_SAMPLE_GATEWAY_PLUGIN_FILE ) . '" alt="' . __( 'Sample Payment Gateway Icon', 'lifterlms-sample-gateway' ) . '">';
 
 		/**
 		 * The title of the gateway's testing/sandbox environment
@@ -171,7 +171,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 *
 		 * @var string
 		 */
-		$this->test_mode_title = __( 'Sandbox Mode', 'lifterlms-stripe' );
+		$this->test_mode_title = __( 'Sandbox Mode', 'lifterlms-sample-gateway' );
 
 		/**
 		 * A description of the gateway's testing environment.
@@ -182,7 +182,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 * @var [type]
 		 */
 		$this->test_mode_description = sprintf(
-			__( 'Sandbox Mode can be used to process test transactions. %1$sLearn More.%2$s', 'lifterlms', ),
+			__( 'Sandbox Mode can be used to process test transactions. %1$sLearn More.%2$s', 'lifterlms-sample-gateway', ),
 			'<a href="#">', // Add a link to the gateway's documentation here.
 			'</a>'
 		);
@@ -305,7 +305,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 
 			// In our example, all fields are required.
 			if ( empty( $data[ $field ] ) ) {
-				$errs->add( 'llms_sg_checkout_requied_field_' . $field, sprintf( __( 'Missing required field: %s', 'lifterlms' ), $field ) );
+				$errs->add( 'llms_sg_checkout_requied_field_' . $field, sprintf( __( 'Missing required field: %s', 'lifterlms-sample-gateway' ), $field ) );
 			}
 		}
 
@@ -326,7 +326,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 			$exp = array_filter( array_map( 'absint', array_map( 'trim', explode( '/', $data['expiration'] ) ) ) );
 
 			if ( 2 !== count( $exp ) ) {
-				$errs->add( 'llms_sg_checkout_invalid_expiration', __( 'Invalid expiration date.', 'lifterlms' ) );
+				$errs->add( 'llms_sg_checkout_invalid_expiration', __( 'Invalid expiration date.', 'lifterlms-sample-gateway' ) );
 			}
 		}
 
@@ -395,10 +395,10 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		$currency = $order->get( 'currency' );
 		if ( $total < 0.50 ) {
 			$this->log( 'Sample Gateway `handle_pending_order()` ended with validation errors', 'Less than minimum order amount.' );
-			return llms_add_notice( sprintf( _x( 'This gateway cannot process %1$s transactions for less than %2$s.', 'min transaction amount error', 'lifterlms-stripe' ), $currency, llms_price_raw( $min ) ), 'error' );
+			return llms_add_notice( sprintf( _x( 'This gateway cannot process %1$s transactions for less than %2$s.', 'min transaction amount error', 'lifterlms-sample-gateway' ), $currency, llms_price_raw( $min ) ), 'error' );
 		} elseif ( $total > 1000.00 ) {
 			$this->log( 'Sample Gateway `handle_pending_order()` ended with validation errors', 'Greater than minimum order amount.' );
-			return llms_add_notice( sprintf( _x( 'This gateway cannot process %1$s transactions for more than %2$s.', 'max transaction amount error', 'lifterlms-stripe' ), $currency, llms_price_raw( self::MAX_AMOUNT ) ), 'error' );
+			return llms_add_notice( sprintf( _x( 'This gateway cannot process %1$s transactions for more than %2$s.', 'max transaction amount error', 'lifterlms-sample-gateway' ), $currency, llms_price_raw( self::MAX_AMOUNT ) ), 'error' );
 		}
 
 		/**
@@ -444,7 +444,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 */
 		if ( 'success' !== $res['status'] ) {
 			$this->log( 'Sample Gateway `handle_pending_order()` ended with card errors', $res );
-			return llms_add_notice( sprintf( __( 'Card error: %s', 'lifterlms' ), $res['status'] ), 'error' );
+			return llms_add_notice( sprintf( __( 'Card error: %s', 'lifterlms-sample-gateway' ), $res['status'] ), 'error' );
 		}
 
 		/**
@@ -454,7 +454,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 */
 
 		// You can add notes to the order.
-		$order->add_note( sprintf( __( 'Gaetway customer "%s" created or updated.', 'lifterlms-stripe' ), $res['customer_id'] ) );
+		$order->add_note( sprintf( __( 'Gaetway customer "%s" created or updated.', 'lifterlms-sample-gateway' ), $res['customer_id'] ) );
 
 		/**
 		 * Store a customer ID
@@ -531,7 +531,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 			$order->add_note(
 				sprintf(
 					// Translators: %1$s = Payment type; $2$s = Payment source ID; %3$s = Charge ID.
-					__( 'Charge attempt for %1$s payment succeeded! [Charge ID: %2$s]', 'lifterlms-stripe' ),
+					__( 'Charge attempt for %1$s payment succeeded! [Charge ID: %2$s]', 'lifterlms-sample-gateway' ),
 					$payment_type,
 					$gateway_txn_result['id']
 				)
@@ -542,7 +542,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 			$order->add_note(
 				sprintf(
 					// Translators: %1$s = Payment type; $2$s = Payment source ID; $3$s = Error message; %4$s = Charge ID.
-					__( 'Charge attempt for %1$s failed. [Charge ID: %2$s]', 'lifterlms-stripe' ),
+					__( 'Charge attempt for %1$s failed. [Charge ID: %2$s]', 'lifterlms-sample-gateway' ),
 					$payment_type,
 					$gateway_txn_result['id']
 				)

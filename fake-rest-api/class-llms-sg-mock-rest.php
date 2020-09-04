@@ -62,7 +62,7 @@ class LLMS_SG_Mock_REST extends WP_REST_Controller {
 
 		$key = $request->get_header( 'x_api_key' );
 		if ( 'SECRET' !== $key ) {
-			return new WP_Error( 'api-key-error', __( 'Missing or invalid API Key required.', 'lifterlms' ), array( 'status' => 401 ) );
+			return new WP_Error( 'api-key-error', __( 'Missing or invalid API Key required.', 'lifterlms-sample-gateway' ), array( 'status' => 401 ) );
 		}
 
 		return true;
