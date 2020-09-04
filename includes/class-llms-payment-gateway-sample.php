@@ -646,8 +646,17 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 			),
 		);
 
-		// Record the transaction.
-		$this->record_transaction( $order, $res, 'initial' );		
+		/**
+		 * Record the transaction
+		 *
+		 * Both successful and failed transactions *should be recorded*.
+		 *
+		 * If recurring retries are enabled for the gateway you'll see the next payment automatically rescheduled
+		 * according to the LifterLMS Automatic Retry rules.
+		 *
+		 * Notifications are *automatically sent* in this scenario.
+		 */
+		$this->record_transaction( $order, $res, 'initial' );
 
 	}
 
