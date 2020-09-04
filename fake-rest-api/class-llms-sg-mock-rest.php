@@ -11,7 +11,7 @@
  * api provided by the payment provider.
  *
  * @package LifterLMS/Classes
- * 
+ *
  * @since [version]
  * @version [version]
  */
@@ -29,7 +29,7 @@ class LLMS_SG_Mock_REST extends WP_REST_Controller {
 	public function register_routes() {
 
 		$namespace = 'sg-mock/v1';
-		
+
 		register_rest_route( $namespace, '/transactions', array(
 			array(
 				'methods'  => WP_REST_Server::CREATABLE,
@@ -70,12 +70,14 @@ class LLMS_SG_Mock_REST extends WP_REST_Controller {
 
 	public function transactions( $request ) {
 
-		//
 		$status = 'declined';
 
-		// Success on initial payment and make all recurring transactions automatically succeed.
-		if ( '4242424242424242' === $request['number'] || 0 === strpos( $request['source'], 'source_' ) ) {
+		// Success on initial payment.
+		if ( '4242424242424242' === $request['number'] ) {
 			$status = 'success';
+		// Recurring payments succeed 50% of the time.
+		} elseif ( $request['source'] && 1 === rand( 1, 2 ) ) {
+			$status = 'success'
 		}
 
 		return rest_ensure_response( array(

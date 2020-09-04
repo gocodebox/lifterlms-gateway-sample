@@ -5,7 +5,7 @@
  * File description.
  *
  * @package LifterLMS/Classes
- * 
+ *
  * @since [version]
  * @version [version]
  */
@@ -70,9 +70,9 @@ final class LifterLMS_Sample_Gateway {
 		// Cleanup.
 		register_deactivation_hook( LLMS_SAMPLE_GATEWAY_PLUGIN_FILE, array( $this, 'deactivate' ) );
 
-		// Register the mock REST API used by the LLMS_SG_API class. When creating your own gateway you don't need this and can delete this hook/function/class.
+		// Register the mock REST API used by the LLMS_SG_API class. When creating your own gateway you don't need this and can delete this hook/function/class/containing directory.
 		add_action( 'rest_api_init', function() {
-			require_once LLMS_SAMPLE_GATEWAY_PLUGIN_DIR . 'includes/class-llms-sg-mock-rest.php';
+			require_once LLMS_SAMPLE_GATEWAY_PLUGIN_DIR . 'fake-rest-api/class-llms-sg-mock-rest.php';
 			$api = new LLMS_SG_Mock_REST();
 			$api->register_routes();
 		} );
@@ -105,7 +105,7 @@ final class LifterLMS_Sample_Gateway {
 	public function are_plugin_requirements_met() {
 
 		return ( function_exists( 'llms' ) && version_compare( '4.0.0', llms()->version, '<=' ) );
-		
+
 	}
 
 	/**
@@ -145,7 +145,7 @@ final class LifterLMS_Sample_Gateway {
 
 		// Only load the plugin if the plugin's requirements have been met.
 		if ( $this->are_plugin_requirements_met() ) {
-			
+
 			// Register the payment gateway with LifterLMS.
 			add_filter( 'lifterlms_payment_gateways', array( $this, 'register_gateway' ) );
 
