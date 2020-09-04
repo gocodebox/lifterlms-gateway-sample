@@ -19,6 +19,25 @@ This is a WordPress plugin which can be cloned or downloaded and installed as a 
 + To see an example of a declined card error use any card numbers other than the success card noted above.
 + Recurring payments will succeed 50% of the time.
 + Refunds can be processed via the gateway. They will never fail.
++ A lot of information is automatically logged, enable debug logging in the gateway settings.
++ If something isn't logged that you want to see, add additional logs using `llms_log( $var_you_want_to_inspect, 'sample' )` or use `print_f()` / `var_dump()`.
+
+
+## How to test recurring payments
+
+**Write unit tests (this example doesn't include example tests but one day maybe it will)**
+
+If you don't know how to write unit tests you can manually test recurring payments by:
+
++ Create your recurring access plan
++ Checkout to create the recurring order
++ Navigate to the order on the admin panel
++ Edit the "Next Payment Due Date" to be today at 00:00
++ Save the order
++ Navigate to the Tools -> Scheduled Actions (turn on `WP_DEBUG` && `WP_DEBUG_DISPLAY` if you don't see it)
++ Find the action matching the order ID of the order you're testing
++ Refresh until the action runs (it runs background actions every one to two minutes)
++ Check your logs, order status, etc...
 
 
 ## How to build your own payment gateway
