@@ -4,8 +4,8 @@
  *
  * @package LifterLMS_Sample_Gateway/Admin/Settings
  *
- * @since [version]
- * @version [version]
+ * @since 2020-09-04
+ * @version 2020-09-04
  */
 
 defined( 'ABSPATH' ) || exit;

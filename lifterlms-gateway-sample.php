@@ -6,13 +6,13 @@
  *
  * @package LifterLMS_Sample_Gateway/Main
  *
- * @since [version]
- * @version [version]
+ * @since 2020-09-04
+ * @version 2020-09-04
  *
  * Plugin Name: LifterLMS Sample Payment Gateway
  * Plugin URI: https://github.com/gocodebox/lifterlms-gateway-sample
  * Description: This plugin is a sample payment gateway which exists to demonstrate how to build a payment gateway plugin for LifterLMS
- * Version: 1.0.0
+ * Version: 2020-09-04
  * Author: LifterLMS
  * Author URI: https://lifterlms.com
  * Text Domain: lifterlms-sample-gateway
@@ -38,7 +38,7 @@ if ( ! class_exists( 'LifterLMS_Sample_Gateway' ) ) {
 /**
  * Main gateway instance
  *
- * @since [version]
+ * @since 2020-09-04
  *
  * @return LifterLMS_Sample_Gateway
  */

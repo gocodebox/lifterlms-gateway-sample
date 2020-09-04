@@ -16,8 +16,8 @@
  *
  * @package LifterLMS_Sample_Gateway/Classes
  *
- * @since [version]
- * @version [version]
+ * @since 2020-09-04
+ * @version 2020-09-04
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -25,14 +25,14 @@ defined( 'ABSPATH' ) || exit;
 /**
  * LLMS_SG_API class.
  *
- * @since [version]
+ * @since 2020-09-04
  */
 class LLMS_SG_API extends LLMS_Abstract_API_Handler {
 
 	/**
 	 * Parse the body of the response and set a success/error
 	 *
-	 * @since 1.0.0
+	 * @since 2020-09-04
 	 *
 	 * @param array $response Raw API response.
 	 * @return array
@@ -66,7 +66,7 @@ class LLMS_SG_API extends LLMS_Abstract_API_Handler {
 	 * It may be fine to pass an array directly to the API or maybe it needs to be massaged in some
 	 * way, that'll be up to you to determine based on the API you're interacting with.
 	 *
-	 * @since 1.0.0
+	 * @since 2020-09-04
 	 *
 	 * @param array  $data     Request body.
 	 * @param string $method   Request method.
@@ -80,7 +80,7 @@ class LLMS_SG_API extends LLMS_Abstract_API_Handler {
 	/**
 	 * Set request headers
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @param array  $headers  Default request headers.
 	 * @param string $resource Requested resource.
@@ -97,7 +97,7 @@ class LLMS_SG_API extends LLMS_Abstract_API_Handler {
 	/**
 	 * Set the request URL
 	 *
-	 * @since 1.0.0
+	 * @since 2020-09-04
 	 *
 	 * @param string $resource Requested resource.
 	 * @param string $method   Request method.

@@ -6,8 +6,8 @@
  *
  * @package LifterLMS_Sample_Gateway/Classes
  *
- * @since [version]
- * @version [version]
+ * @since 2020-09-04
+ * @version 2020-09-04
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -22,7 +22,7 @@ final class LifterLMS_Sample_Gateway {
 	 *
 	 * @var string
 	 */
-	protected $version = '0.0.1';
+	protected $version = '2020-09-04';
 
 	/**
 	 * Singleton instance of the class
@@ -34,7 +34,7 @@ final class LifterLMS_Sample_Gateway {
 	/**
 	 * Singleton Instance of the LifterLMS_Stripe class
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @return LifterLMS_Sample_Gateway
 	 */
@@ -51,7 +51,7 @@ final class LifterLMS_Sample_Gateway {
 	/**
 	 * Constructor.
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @return void
 	 */
@@ -85,7 +85,7 @@ final class LifterLMS_Sample_Gateway {
 	/**
 	 * Initialize and make a new API request.
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @param string $resource Resource endpoint/path for the request.
 	 * @param array  $data     Associative array of data to pass in the request body.
@@ -101,7 +101,7 @@ final class LifterLMS_Sample_Gateway {
 	 *
 	 * This stub checks to see if the minimum required version of LifterLMS is installed
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @return boolean
 	 */
@@ -116,7 +116,7 @@ final class LifterLMS_Sample_Gateway {
 	 *
 	 * This method can be used to delete plugin data such as options or custom post types.
 	 *
-	 * @since 0.0.1
+	 * @since 2020-09-04
 	 *
 	 * @return void
 	 */
@@ -127,7 +127,7 @@ final class LifterLMS_Sample_Gateway {
 	 *
 	 * This function isn't strictly necessary but is useful to quickly retrieve an instance of the gateway.
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @example llms_sample_gateway()->get_gateway()
 	 *
@@ -140,7 +140,7 @@ final class LifterLMS_Sample_Gateway {
 	/**
 	 * Include all required files and classes
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @return void
 	 */
@@ -162,7 +162,7 @@ final class LifterLMS_Sample_Gateway {
 	/**
 	 * Include all required files
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @return void
 	 */
@@ -182,7 +182,7 @@ final class LifterLMS_Sample_Gateway {
 	 *      WP_LANG_DIR/lifterlms/lifterlms-sample-gateway-LOCALE.mo
 	 *      WP_LANG_DIR/plugins/lifterlms-sample-gateway-LOCALE.mo
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @return void
 	 */
@@ -202,7 +202,7 @@ final class LifterLMS_Sample_Gateway {
 	/**
 	 * Register the gateway with LifterLMS
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @param string[] $gateways Array of currently registered gateway class names.
 	 * @return string[]

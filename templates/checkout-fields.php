@@ -6,8 +6,8 @@
  *
  * @package LifterLMS/Classes
  *
- * @since [version]
- * @version [version]
+ * @since 2020-09-04
+ * @version 2020-09-04
  *
  * @property LLMS_Payment_Gateway_Sample $gateway  Gateway class instance
  * @property boolean                     $selected Whether or not this gateway is the "selected" payment gateway on page load.

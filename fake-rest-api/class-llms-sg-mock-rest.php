@@ -12,8 +12,8 @@
  *
  * @package LifterLMS_Sample_Gateway/Fake_API/Clasess
  *
- * @since [version]
- * @version [version]
+ * @since 2020-09-04
+ * @version 2020-09-04
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -21,14 +21,14 @@ defined( 'ABSPATH' ) || exit;
 /**
  * LLMS_SG_Mock_REST class.
  *
- * @since [version]
+ * @since 2020-09-04
  */
 class LLMS_SG_Mock_REST extends WP_REST_Controller {
 
 	/**
 	 * Register REST Routes.
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @return void
 	 */
@@ -67,7 +67,7 @@ class LLMS_SG_Mock_REST extends WP_REST_Controller {
 	/**
 	 * Valid API Keys
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_Error|boolean
@@ -85,7 +85,7 @@ class LLMS_SG_Mock_REST extends WP_REST_Controller {
 	/**
 	 * Refunds
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Response
@@ -103,7 +103,7 @@ class LLMS_SG_Mock_REST extends WP_REST_Controller {
 	/**
 	 * Transactions
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Response

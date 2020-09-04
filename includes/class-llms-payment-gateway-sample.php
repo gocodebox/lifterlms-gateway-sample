@@ -6,8 +6,8 @@
  *
  * @package LifterLMS_Sample_Gateway/Classes
  *
- * @since [version]
- * @version [version]
+ * @since 2020-09-04
+ * @version 2020-09-04
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * LLMS_Payment_Gateway_Sample
  *
- * @since [version]
+ * @since 2020-09-04
  */
 class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 
@@ -58,7 +58,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 *
 	 * This method will configure class variables and attach all necessary hooks.
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @return void
 	 */
@@ -74,7 +74,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	/**
 	 * Output custom settings fields on the LifterLMS Gateways Screen
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @param array  $default_fields Array of existing fields.
 	 * @param string $gateway_id Id of the gateway.
@@ -106,7 +106,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 *
 	 * These variables are setup in the abstract but should be defined by each gateway individually.
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @return void
 	 */
@@ -277,7 +277,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	/**
 	 * Retrieve the API Key for the current API mode
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @return string
 	 */
@@ -294,7 +294,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 * This function is called automatically by the checkout form template in LifterLMS
 	 * for any gateway that declares support for checkout fields.
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @return string
 	 */
@@ -317,7 +317,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 * For maximum compatibility with other plugins, themes, etc... this filter should be left intact
 		 * to allow customization of the gateway fields.
 		 *
-		 * @since [version]
+		 * @since 2020-09-04
 		 *
 		 * @param string $html The checkout field HTML.
 		 */
@@ -330,7 +330,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 *
 	 * Performs validation and returns the data in a structured array.
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @return array|WP_Error
 	 */
@@ -395,7 +395,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 * If it handles payment entirely through an API (like with Stripe) it should call the `complete_transaction()` method which will
 	 * finalize the transaction and redirect the user based on logic in the LiftreLMS Core.
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @param LLMS_Order        $order   Order object.
 	 * @param LLMS_Access_Plan  $plan    Access plan object.
@@ -557,7 +557,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 * This is used by `handle_pending_order()` during all transactions and later by `handle_recurring_transaction()`
 	 * when a recurring payment is triggered by the background process scheduler.
 	 *
-	 * @since [version]
+	 * @since 2020-09-04
 	 *
 	 * @param LLMS_Order $order              Order object.
 	 * @param array      $gateway_txn_result Associative array of transaction result data from our mock api.
@@ -618,7 +618,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 *
 	 * If this is not defined, it will just return the supplied ID
 	 *
-	 * @since 3.0.0
+	 * @since 2020-09-04
 	 *
 	 * @param string $customer_id Gateway's customer ID.
 	 * @param string $api_mode    Link to either the live or test site for the gateway, where applicable.
@@ -635,7 +635,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 *
 	 * If this is not defined, it will just return the supplied ID
 	 *
-	 * @since 3.0.0
+	 * @since 2020-09-04
 	 *
 	 * @param string $source_id Gateway's source ID.
 	 * @param string $api_mode  Link to either the live or test site for the gateway, where applicable.
@@ -652,7 +652,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 *
 	 * If this is not defined, it will just return the supplied ID
 	 *
-	 * @since 3.0.0
+	 * @since 2020-09-04
 	 *
 	 * @param string $subscription_id Gateway's source ID.
 	 * @param string $api_mode        Link to either the live or test site for the gateway, where applicable.
@@ -669,7 +669,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 *
 	 * If this is not defined, it will just return the supplied ID
 	 *
-	 * @since 3.0.0
+	 * @since 2020-09-04
 	 *
 	 * @param string $transaction_id Gateway's source ID.
 	 * @param string $api_mode       Link to either the live or test site for the gateway, where applicable.
@@ -724,7 +724,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 * When a refund is processed via this button then this method will be called which is responsible for processing
 	 * the refund via the provider's API and recording the data back to the WP database.
 	 *
-	 * @since 3.0.0
+	 * @since 2020-09-04
 	 *
 	 * @param LLMS_Transaction $transaction Transaction object.
 	 * @param float            $amount      Amount to refund.
