@@ -77,7 +77,7 @@ class LLMS_SG_Mock_REST extends WP_REST_Controller {
 			$status = 'success';
 		// Recurring payments succeed 50% of the time.
 		} elseif ( $request['source'] && 1 === rand( 1, 2 ) ) {
-			$status = 'success'
+			$status = 'success';
 		}
 
 		return rest_ensure_response( array(
