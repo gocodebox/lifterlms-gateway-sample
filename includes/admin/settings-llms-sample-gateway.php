@@ -43,7 +43,12 @@ $fields[] = array(
 	 *
 	 * Allows HTML which might be useful for adding links to documentation related to the option.
 	 */
-	'desc'          => '<br>' . sprintf( __( 'Need help finding your API key? %1$sLearn how.%2$s', 'lifterlms-sample-gateway' ), '<a href="#documentation-link">', '</a>' ),
+	'desc'          => '<br>' . sprintf(
+		// Translators: %1$s = opening anchor tag; %2$s = closing anchor tag.
+		__( 'Need help finding your API key? %1$sLearn how.%2$s', 'lifterlms-sample-gateway' ),
+		'<a href="#documentation-link">',
+		'</a>'
+	),
 
 	/**
 	 * The type of setting field.
@@ -99,7 +104,7 @@ $fields[] = array(
 );
 
 /**
- *
+ * Add a select option
  */
 $fields[] = array(
 	'id'      => $gateway->get_option_name( 'select_option' ),

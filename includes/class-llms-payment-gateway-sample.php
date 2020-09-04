@@ -24,10 +24,34 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 *
 	 * The value defined here is used as the default when no value is stored in the database.
 	 */
+
+	/**
+	 * Checkbox option.
+	 *
+	 * @var string
+	 */
 	protected $checkbox_option = '';
-	protected $live_api_key    = '';
-	protected $select_option   = '';
-	protected $test_api_key    = '';
+
+	/**
+	 * Live mode API key option.
+	 *
+	 * @var string
+	 */
+	protected $live_api_key = '';
+
+	/**
+	 * Select option
+	 *
+	 * @var string
+	 */
+	protected $select_option = '';
+
+	/**
+	 * Test mode API key option.
+	 *
+	 * @var string
+	 */
+	protected $test_api_key = '';
 
 	/**
 	 * Constructor
@@ -45,12 +69,6 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		// Add Custom Settings Fields to the gateway settings screen on the admin panel.
 		add_filter( 'llms_get_gateway_settings_fields', array( $this, 'add_settings_fields' ), 10, 2 );
 
-		// show payment method source description on the view order screen on the student dashboard.
-		// add_action( 'lifterlms_view_order_after_payment_method', array( $this, 'output_order_payment_source' ) );
-
-		// add_action( 'lifterlms_checkout_confirm_after_payment_method', array( $this, 'confirm_order_html' ) );
-
-		// add_filter( 'llms_gateway_stripe_show_confirm_order_button', '__return_false' );
 	}
 
 	/**
@@ -64,7 +82,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 */
 	public function add_settings_fields( $default_fields, $gateway_id ) {
 
-		// Only add fields to this payment gateway
+		// Only add fields to this payment gateway.
 		if ( $this->id === $gateway_id ) {
 
 			/**
@@ -182,7 +200,8 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 * @var [type]
 		 */
 		$this->test_mode_description = sprintf(
-			__( 'Sandbox Mode can be used to process test transactions. %1$sLearn More.%2$s', 'lifterlms-sample-gateway', ),
+			// Translators: %1$s = opening anchor tag; %2$s = closing anchor tag.
+			__( 'Sandbox Mode can be used to process test transactions. %1$sLearn More.%2$s', 'lifterlms-sample-gateway' ),
 			'<a href="#">', // Add a link to the gateway's documentation here.
 			'</a>'
 		);
@@ -233,13 +252,26 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 			'test_mode'          => true,
 		);
 
-		// $this->admin_order_fields = wp_parse_args(
-		// array(
-		// 'customer' => true,
-		// 'source'   => true,
-		// ),
-		// $this->admin_order_fields
-		// );
+		/**
+		 * Configure fields that are supported by the gateway
+		 *
+		 * Supported fields are displayed on the admin panel with the order
+		 * under "Gateway Information" and are editable by the end user.
+		 *
+		 * @var boolean[]
+		 */
+		$this->admin_order_fields = wp_parse_args(
+			array(
+				// Used to save the gateway's customer ID.
+				'customer'     => true,
+				// Used to save the gateway's payment source ID (card, bank account, etc...).
+				'source'       => true,
+				// Used to save the gateway's subscription ID.
+				'subscription' => false,
+			),
+			// Merge with defaults from the core abstract for forward compatibility.
+			$this->admin_order_fields
+		);
 	}
 
 	/**
@@ -293,6 +325,15 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 
 	}
 
+	/**
+	 * Retrieves user-submitted fields from the $_POST array
+	 *
+	 * Performs validation and returns the data in a structured array.
+	 *
+	 * @since [version]
+	 *
+	 * @return array|WP_Error
+	 */
 	protected function get_field_data() {
 
 		$errs = new WP_Error();
@@ -305,6 +346,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 
 			// In our example, all fields are required.
 			if ( empty( $data[ $field ] ) ) {
+				// Translators: %s = field key.
 				$errs->add( 'llms_sg_checkout_requied_field_' . $field, sprintf( __( 'Missing required field: %s', 'lifterlms-sample-gateway' ), $field ) );
 			}
 		}
@@ -359,7 +401,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 * @param LLMS_Access_Plan  $plan    Access plan object.
 	 * @param LLMS_Student      $student Student object.
 	 * @param LLMS_Coupon|false $coupon  Coupon object when a coupon has been applied, otherwise `false.
-	 * @return void
+	 * @return null|void
 	 */
 	public function handle_pending_order( $order, $plan, $student, $coupon = false ) {
 
@@ -395,9 +437,11 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		$currency = $order->get( 'currency' );
 		if ( $total < 0.50 ) {
 			$this->log( 'Sample Gateway `handle_pending_order()` ended with validation errors', 'Less than minimum order amount.' );
+			// Translators: %1$s = currency code; %2$s = price.
 			return llms_add_notice( sprintf( _x( 'This gateway cannot process %1$s transactions for less than %2$s.', 'min transaction amount error', 'lifterlms-sample-gateway' ), $currency, llms_price_raw( $min ) ), 'error' );
 		} elseif ( $total > 1000.00 ) {
 			$this->log( 'Sample Gateway `handle_pending_order()` ended with validation errors', 'Greater than minimum order amount.' );
+			// Translators: %1$s = currency code; %2$s = price.
 			return llms_add_notice( sprintf( _x( 'This gateway cannot process %1$s transactions for more than %2$s.', 'max transaction amount error', 'lifterlms-sample-gateway' ), $currency, llms_price_raw( self::MAX_AMOUNT ) ), 'error' );
 		}
 
@@ -444,7 +488,14 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 */
 		if ( 'success' !== $res['status'] ) {
 			$this->log( 'Sample Gateway `handle_pending_order()` ended with card errors', $res );
-			return llms_add_notice( sprintf( __( 'Card error: %s', 'lifterlms-sample-gateway' ), $res['status'] ), 'error' );
+			return llms_add_notice(
+				sprintf(
+				// Translators: %s = card error code.
+					__( 'Card error: %s', 'lifterlms-sample-gateway' ),
+					$res['status']
+				),
+				'error'
+			);
 		}
 
 		/**
@@ -454,7 +505,13 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 		 */
 
 		// You can add notes to the order.
-		$order->add_note( sprintf( __( 'Gaetway customer "%s" created or updated.', 'lifterlms-sample-gateway' ), $res['customer_id'] ) );
+		$order->add_note(
+			sprintf(
+			// Translators: %s = gateway customer id.
+				__( 'Gateway customer "%s" created or updated.', 'lifterlms-sample-gateway' ),
+				$res['customer_id']
+			)
+		);
 
 		/**
 		 * Store a customer ID
@@ -502,7 +559,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 *
 	 * @since [version]
 	 *
-	 * @param LLMS_Order $order              Order object
+	 * @param LLMS_Order $order              Order object.
 	 * @param array      $gateway_txn_result Associative array of transaction result data from our mock api.
 	 * @param string     $type               The type of payment. Either "initial" for the first payment on an order or "recurring" for recurring payments.
 	 * @return LLMS_Transaction
@@ -521,7 +578,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 			'payment_type' => $payment_type,
 		);
 
-		$args['completed_date']     = date( 'Y-m-d H:i:s', $gateway_txn_result['created'] );
+		$args['completed_date']     = gmdate( 'Y-m-d H:i:s', $gateway_txn_result['created'] );
 		$args['source_id']          = $gateway_txn_result['source_id'];
 		$args['source_description'] = 'Visa ending in 4242'; // This is a human-readable name for the card. Don't save the card number in the DB, okay!
 		$args['transaction_id']     = $gateway_txn_result['id'];
@@ -563,7 +620,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $customer_id Gateway's customer ID
+	 * @param string $customer_id Gateway's customer ID.
 	 * @param string $api_mode    Link to either the live or test site for the gateway, where applicable.
 	 * @return string
 	 */
@@ -580,7 +637,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $source_id Gateway's source ID
+	 * @param string $source_id Gateway's source ID.
 	 * @param string $api_mode  Link to either the live or test site for the gateway, where applicable.
 	 * @return string
 	 */
@@ -597,7 +654,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $subscription_id Gateway's source ID
+	 * @param string $subscription_id Gateway's source ID.
 	 * @param string $api_mode        Link to either the live or test site for the gateway, where applicable.
 	 * @return string
 	 */
@@ -614,7 +671,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $transaction_id Gateway's source ID
+	 * @param string $transaction_id Gateway's source ID.
 	 * @param string $api_mode       Link to either the live or test site for the gateway, where applicable.
 	 * @return string
 	 */
@@ -638,7 +695,7 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 				'source'   => $order->get( 'gateway_source_id' ),
 				'customer' => $order->get( 'gateway_customer_id' ),
 				'amount'   => $order->get_price( 'total', array(), 'float' ),
-			),
+			)
 		);
 
 		/**
@@ -680,11 +737,9 @@ class LLMS_Payment_Gateway_Sample extends LLMS_Payment_Gateway {
 
 		$req = llms_sample_gateway()->api(
 			'/refunds',
-			array_merge(
-				array(
-					'amount' => $amount,
-					'reason' => $note,
-				),
+			array(
+				'amount' => $amount,
+				'reason' => $note,
 			)
 		);
 

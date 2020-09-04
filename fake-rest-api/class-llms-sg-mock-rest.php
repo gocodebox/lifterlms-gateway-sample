@@ -25,7 +25,13 @@ defined( 'ABSPATH' ) || exit;
  */
 class LLMS_SG_Mock_REST extends WP_REST_Controller {
 
-
+	/**
+	 * Register REST Routes.
+	 *
+	 * @since [version]
+	 *
+	 * @return void
+	 */
 	public function register_routes() {
 
 		$namespace = 'sg-mock/v1';
@@ -58,6 +64,14 @@ class LLMS_SG_Mock_REST extends WP_REST_Controller {
 
 	}
 
+	/**
+	 * Valid API Keys
+	 *
+	 * @since [version]
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_Error|boolean
+	 */
 	public function permission_callback( $request ) {
 
 		$key = $request->get_header( 'x_api_key' );
@@ -68,6 +82,14 @@ class LLMS_SG_Mock_REST extends WP_REST_Controller {
 		return true;
 	}
 
+	/**
+	 * Refunds
+	 *
+	 * @since [version]
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response
+	 */
 	public function refunds( $request ) {
 		return rest_ensure_response(
 			array(
@@ -78,6 +100,14 @@ class LLMS_SG_Mock_REST extends WP_REST_Controller {
 		);
 	}
 
+	/**
+	 * Transactions
+	 *
+	 * @since [version]
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response
+	 */
 	public function transactions( $request ) {
 
 		$status = 'declined';
