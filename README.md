@@ -88,3 +88,10 @@ Report it [here on GitHub](https://github.com/gocodebox/lifterlms-gateway-sample
 ## I would like to contribute and improve this example plugin
 
 We love you, please open up a [Pull Request](https://github.com/gocodebox/lifterlms-gateway-sample/pulls)!
+
+
+## When you're finished
+
+If you've completed a LifterLMS Payment Gateway plugin we want to hear about it! Contact team@lifterlms.com.
+
+Assuming it works and you're planning to offer support to prospective users we will help you promote and market it, list it on our third-party add-ons page, and more!
